@@ -1,0 +1,1 @@
+Project developed for the course **"Algoritmit ja tekoäly (periodi 2)"** at the **University of Helsinki**. The objective of this project is to design and evaluate an intelligent traffic light control system capable of optimizing vehicle flow at intersections.
