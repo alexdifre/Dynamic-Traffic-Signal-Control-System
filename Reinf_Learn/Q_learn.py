@@ -1,6 +1,6 @@
-from random import random
+import random
 
-class Q_Learn_agent:
+class Q_Learn:
     """Implementation of Q-learning reinforcement algorithm"""
     
     def __init__(self, learning_parameter, exploration_parameter, discount_parameter, action_space):
@@ -12,6 +12,8 @@ class Q_Learn_agent:
 
     def get_action_value(self, state, action):
         """Retrieves Q-value for state-action pair"""
+        if (state, action) not in self.q_data:
+            return 0.0
         return self.q_data.get((state, action), 0.0)
 
     def compute_state_value(self, state):
@@ -29,11 +31,11 @@ class Q_Learn_agent:
             return None
             
         # Map actions to their values
-        action_value_map = {act: self.get_action_value(state, act) for act in self.actions}
-        max_value = max(action_value_map.values())
+        action_value_pairs = [(act, self.get_action_value(state, act)) for act in self.actions]
+        max_value = max([self.get_action_value(state, act) for act in self.actions])
         
         # Select randomly among equally optimal actions
-        best_actions = [act for act, val in action_value_map.items() if val == max_value]
+        best_actions = [act for act, val in action_value_pairs if val == max_value]
         return random.choice(best_actions)
 
     def select_action(self, state):
@@ -53,9 +55,9 @@ class Q_Learn_agent:
         current_q = self.get_action_value(state, action)
         best_future_value = self.compute_state_value(next_state)
         
-        # Q-learning update rule
-        new_q = current_q + self.alpha * (
-            reward + self.gamma * best_future_value - current_q
+        # Q-learning update rule: Q(s,a) = (1-α)*Q(s,a) + α*(r + γ*max_Q(s',a'))
+        new_q = (1 - self.alpha) * current_q + self.alpha * (
+            reward + self.gamma * best_future_value
         )
         
         self.q_data[(state, action)] = new_q

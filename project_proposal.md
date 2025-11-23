@@ -12,7 +12,7 @@ The controller should minimize average waiting time, reduce journey duration, an
 
 ## 2. Proposed Solution
 
-We propose two complementary computational approaches: **Q-Learning** and a **Genetic Algorithm**.
+We propose a computational approaches: **Q-Learning** 
 
 ### 2.1 Reinforcement Learning (Q-Learning)
 
@@ -27,24 +27,11 @@ The agent receives **rewards** when traffic flow improves (e.g., reduced waiting
 By interacting with the simulated environment over time, the agent learns an **optimal policy** that minimizes overall traffic congestion.
 
 
-### 2.2 Search Optimization (Genetic Algorithm)
-
-In parallel, we will implement a **Genetic Algorithm (GA)** to optimize the light-switching sequences through evolutionary principles.  
-Each **individual** in the population represents a potential control policy, encoded as a sequence of green-light durations or switching patterns.  
-
-The GA provides a deterministic optimization benchmark for comparison with the adaptive Q-Learning model.
-
 ---
 
 ## 3. Why This Approach Is Suitable
 
 Traffic light control is a **sequential decision-making problem** that fits well within the reinforcement learning framework.  
-Q-Learning is capable of adapting to dynamic and unpredictable environments, while the Genetic Algorithm can discover near-optimal strategies through search and optimization.
-
-This combination allows:
-- Adaptive, data-driven control (Q-Learning)  
-- Global optimization and policy refinement (Genetic Algorithm)  
-- Comparative evaluation between learning-based and search-based paradigms  
 
 ---
 
