@@ -18,7 +18,12 @@ if __name__ == '__main__':
         action='store_true',
         help="Displays the simulation window"
     )
+    parser.add_argument(
+        "-t", "--train-only", 
+        action='store_true',  
+        dest='run_evaluation',  
+)
 
     args = parser.parse_args()
 
-    launch_q_learning_simulation(num_episodes=args.episodes, render=args.render)
+    launch_q_learning_simulation(num_episodes=args.episodes, render=args.render, mode=args.run_evaluation)

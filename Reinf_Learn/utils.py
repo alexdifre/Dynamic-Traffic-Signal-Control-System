@@ -2,8 +2,8 @@ from .environment import Environment
 from .Q_Learn import Q_Learn
 
 # Hyperparameter configuration
-ALPHA = 0.1
-GAMMA = 0.6
+ALPHA = 0.125
+GAMMA = 0.5
 EPSILON = 0.1
 EPSILON_MIN = 0.01  # Minimum epsilon
 EPSILON_DECAY = 0.995  # Decay rate per episode
@@ -117,7 +117,7 @@ def run_evaluation_session(model, simulation_env, total_episodes: int, display: 
     print(f"Best episode reward: {max(episode_rewards):.2f}")
     print(f"Worst episode reward: {min(episode_rewards):.2f}")
 
-def launch_q_learning_simulation(num_episodes: int, render: bool):
+def launch_q_learning_simulation(num_episodes: int, render: bool , mode: bool ):
     """Primary controller for Q-learning simulation"""
     sim_env = Environment()
     action_options = sim_env.action_set
@@ -130,10 +130,11 @@ def launch_q_learning_simulation(num_episodes: int, render: bool):
     )
     
     training_cycles = 10000
-    model_storage_path = f"traffic_model_{training_cycles}.dat"
+    model_storage_path = f"model_{training_cycles}.dat"
     
-    run_training_session(q_model, sim_env, model_storage_path, training_cycles, False)
-    
+    if mode == True:
+        run_training_session(q_model, sim_env, model_storage_path, training_cycles, False)
+        
     saved_q_data = retrieve_q_data(model_storage_path)
     q_model.q_data = saved_q_data
     
