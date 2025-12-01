@@ -1,27 +1,27 @@
-[project]
-name = "dynamic traffic signal control system"
+[tool.poetry]
+name = "dynamic-traffic-signal-control-system"
 version = "0.1.0"
 description = "Dynamic Traffic Signal Control System"
-authors = [
-    {name = "Alessandro Di Frenna"}
-]
+authors = ["Alessandro Di Frenna"]
 readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [
-    "numpy (>=2.3.4,<3.0.0)",
-    "pandas (>=2.3.3,<3.0.0)",
-    "matplotlib (>=3.10.7,<4.0.0)",
-    "scipy (>=1.16.3,<2.0.0)",
-    "pygame (>=2.6.1,<3.0.0)"
+
+packages = [
+    { include = "TrafficSimulator" },
+    { include = "Reinf_Learn" }
 ]
 
-[dependency-groups]
-dev = [
-    "pylint (>=4.0.2,<5.0.0)",
-    "coverage (>=7.11.0,<8.0.0)"
-]
+[tool.poetry.dependencies]
+python = ">=3.11,<4.0"
+numpy = ">=2.3.4,<3.0.0"
+pandas = ">=2.3.3,<3.0.0"
+matplotlib = ">=3.10.7,<4.0.0"
+scipy = ">=1.16.3,<2.0.0"
+pygame = ">=2.6.1,<3.0.0"
 
+[tool.poetry.group.dev.dependencies]
+pylint = ">=4.0.2,<5.0.0"
+coverage = ">=7.11.0,<8.0.0"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core>=2.0.0"]
 build-backend = "poetry.core.masonry.api"
