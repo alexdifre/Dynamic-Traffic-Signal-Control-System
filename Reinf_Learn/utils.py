@@ -1,6 +1,6 @@
 from .environment import Environment
 from .Q_Learn import Q_Learn
-
+import os
 # Hyperparameter configuration
 ALPHA = 0.125
 GAMMA = 0.5
@@ -117,8 +117,7 @@ def run_evaluation_session(model, simulation_env, total_episodes: int, display: 
     print(f"Best episode reward: {max(episode_rewards):.2f}")
     print(f"Worst episode reward: {min(episode_rewards):.2f}")
 
-def launch_q_learning_simulation(num_episodes: int, render: bool , mode: bool ):
-    """Primary controller for Q-learning simulation"""
+def launch_q_learning_simulation(num_episodes: int, render: bool, mode: bool):
     sim_env = Environment()
     action_options = sim_env.action_set
     
@@ -132,10 +131,14 @@ def launch_q_learning_simulation(num_episodes: int, render: bool , mode: bool ):
     training_cycles = 10000
     model_storage_path = f"model_{training_cycles}.dat"
     
-    if mode == True:
+    if mode:  # Più pythonic che "mode == True"
         run_training_session(q_model, sim_env, model_storage_path, training_cycles, False)
-        
-    saved_q_data = retrieve_q_data(model_storage_path)
-    q_model.q_data = saved_q_data
+    
+    # ✅ FIX: Solo carica se il file esiste
+    if os.path.exists(model_storage_path):
+        saved_q_data = retrieve_q_data(model_storage_path)
+        q_model.q_data = saved_q_data
+    else:
+        print(f"Warning: Model file {model_storage_path} not found. Using untrained model.")
     
     run_evaluation_session(q_model, sim_env, num_episodes, render)

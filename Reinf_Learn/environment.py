@@ -1,19 +1,21 @@
-from typing import Optional, List, Tuple
+from typing import List, Tuple
 import sys
 import os
+current_dir = os.path.dirname(os.path.abspath(__file__)) 
+project_root = os.path.dirname(current_dir) 
 
-# Aggiungi il path della cartella parent per importare TrafficSimulator
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from TrafficSimulator import two_way_intersection_setup 
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+    
+from TrafficSimulator.two_way_intersection import two_way_intersection_setup 
 
 
 class Environment:
     def __init__(self):
         self.action_space: List = [0, 1]
-        self.sim: Optional[Simulation] = None
+        self.sim = None
         self.max_gen: int = 50
-        self._vehicles_on_inbound_roads: int = 0
+        self._last_state_vehicle_count: int = 0 
 
     def perform_step(self, control_signal) -> Tuple[Tuple, float, bool, bool]:
         """Processes one control interval in the simulation."""
@@ -22,14 +24,14 @@ class Environment:
         current_state: Tuple = self._capture_environment_state()
         performance_score: float = self._determine_performance(current_state)
 
-        # Set the number of vehicles on inbound roads in the new state
+        # Update vehicle count cache for next reward calculation
         n_west_east_vehicles, n_south_north_vehicles = current_state[1], current_state[2]
-        self._vehicles_on_inbound_roads = n_west_east_vehicles + n_south_north_vehicles
+        self._last_state_vehicle_count = n_west_east_vehicles + n_south_north_vehicles
 
         # Whether a terminal state is reached
         simulation_ended: bool = self.sim.completed
 
-        # Whether a truncation condition is satisfied (GUI closed)
+        # Whether a truncation condition is satisfied 
         visualization_terminated: bool = self.sim.gui_closed
 
         return current_state, performance_score, simulation_ended, visualization_terminated
@@ -59,16 +61,17 @@ class Environment:
 
     def _determine_performance(self, state_observation: Tuple) -> float:
         """
-        Performance metric: penalize queue length (negative reward for waiting vehicles).
-        This incentivizes the agent to minimize total waiting vehicles.
+        - Positive reward when traffic decreases ,good!
+        - Negative reward when traffic increases ,bad!
+        - Zero reward when no change
         """
         traffic_signal_state, n_direction_1_vehicles, n_direction_2_vehicles, non_empty_junction = state_observation
         
-        # Negative reward for each vehicle waiting in queue
-        total_queue = n_direction_1_vehicles + n_direction_2_vehicles
-        reward = -total_queue
+        current_vehicle_count = n_direction_1_vehicles + n_direction_2_vehicles
         
-        return float(reward)
+        reward = float(self._last_state_vehicle_count - current_vehicle_count)
+        
+        return reward
 
     def restart_environment(self, enable_display: bool = False) -> Tuple:
         """Resets traffic simulation and returns initial conditions."""
@@ -76,7 +79,7 @@ class Environment:
         if enable_display:
             self.sim.init_gui()
         starting_state = self._capture_environment_state()
-        self._vehicles_on_inbound_roads = 0  # Reset the counter
+        self._last_state_vehicle_count = 0  # Reset the counter
         return starting_state
 
     def retrieve_current_conditions(self) -> Tuple:
@@ -86,8 +89,20 @@ class Environment:
     def assess_state_performance(self, environmental_state: Tuple) -> float:
         """External method for performance evaluation."""
         return self._determine_performance(environmental_state)
+
+    def step(self, action):
+        """Alias for perform_step to match standard gym/test interface."""
+        return self.perform_step(action)
     
-    # Mantieni compatibilità con i nomi originali se necessario
+    def _compute_reward_signal(self, state):
+        """Alias for _determine_performance to match test interface."""
+        return self._determine_performance(state)
+    
+    def _build_observation_tuple(self):
+        """Alias for _capture_environment_state to match test interface."""
+        return self._capture_environment_state()
+    
+
     @property
     def action_set(self):
         return self.action_space

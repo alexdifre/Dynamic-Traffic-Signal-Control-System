@@ -18,12 +18,10 @@ class SimpleGridWorld:
         self.current_state = self.start
         
     def reset(self):
-        """Reset environment to initial state"""
         self.current_state = self.start
         return self._state_to_index(self.current_state)
     
     def _state_to_index(self, state):
-        """Convert (row, col) to unique state index"""
         return state[0] * self.grid_size + state[1]
     
     def step(self, action):
@@ -78,14 +76,14 @@ class QLearningAgent:
         self.num_actions = num_actions
     
     def choose_action(self, state, training=True):
-        """Epsilon-greedy action selection"""
+        """ epsilon-greedy action selection"""
         if training and np.random.random() < self.epsilon:
             return np.random.randint(self.num_actions)
         else:
             return np.argmax(self.q_table[state])
     
     def update(self, state, action, reward, next_state, done):
-        """Q-Learning update"""
+        """Ql update"""
         if done:
             target = reward
         else:
@@ -98,9 +96,7 @@ class TestQLearning(unittest.TestCase):
  
     
     def setUp(self):
-        """
-        Setup executed before each test - 
-        """
+        
         np.random.seed(42)
         self.env = SimpleGridWorld()
         self.agent = QLearningAgent(
@@ -112,7 +108,7 @@ class TestQLearning(unittest.TestCase):
         )
     
     def train_agent(self, episodes=2000):
-        """Helper function to train agent for specified number of episodes"""
+        """helper  to train agent for specified number of episodes"""
         for episode in range(episodes):
             state = self.env.reset()
             done = False
@@ -127,7 +123,7 @@ class TestQLearning(unittest.TestCase):
     
     def test_q_values_are_updated(self):
         """
-        Test 2: Q-values are non-zero and change during training
+        Q-values are non-zero and change during training
         
         """
         initial_q_table = self.agent.q_table.copy()
@@ -145,7 +141,7 @@ class TestQLearning(unittest.TestCase):
     
     def test_q_values_increase_over_time(self):
         """
-        Test 3: Q-values increase monotonically during training
+        q-values increase monotonically during training
     
         """
         q_sums = []
@@ -164,7 +160,7 @@ class TestQLearning(unittest.TestCase):
     
     def test_finds_near_optimal_path(self):
         """
-        Test 7: Agent finds near-optimal solution
+        Agent finds near-optimal solution
         
         Beyond just solving the task, we verify solution quality.
         Optimal path from (0,0) to (4,4) is 8 steps (4 right + 4 down).
@@ -190,7 +186,7 @@ class TestQLearning(unittest.TestCase):
    
     def test_bellman_equation_holds(self):
         """
-        Test 9: Bellman optimality equation is approximately satisfied
+        Bellman optimality equation is approximately satisfied
         
         Property-based test for mathematical correctness.
         
@@ -253,8 +249,7 @@ def run_visual_demo():
                 row.append('.')
         print(' '.join(row))
     
-    print("\n" + "=" * 70)
-    print("Training agent...")
+ 
     
     # Training loop
     for episode in range(2000):
@@ -270,8 +265,7 @@ def run_visual_demo():
         if (episode + 1) % 500 == 0:
             print(f"  Episode {episode + 1}/2000 completed")
     
-    print("Training completed!\n")
-    print("=" * 70)
+
     print("Sample Q-values (first row of grid):")
     print("Format: [up, down, left, right]\n")
     
@@ -308,9 +302,7 @@ def run_visual_demo():
 
 
 if __name__ == "__main__":
-    print(" RUNNING Q-LEARNING TEST ")
 
-    # Run test suite
     unittest.main(argv=[''], exit=False, verbosity=2)
     
     print("\n" + "=" * 70 + "\n")

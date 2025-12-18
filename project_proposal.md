@@ -40,6 +40,7 @@ Traffic light control is a **sequential decision-making problem** that fits well
 ### 4.1 Simulation Setup
 
 Experiments will be conducted using a **traffic flow simulator**, which can be found <a href="https://github.com/BilHim/trafficSimulator" target="_blank">here</a>
+It's contaiend in the folder **TrafficSimulator** inside the root folder **Dynamic Traffic Signal Control System** 
 
 
 ### 4.2 Performance Metrics
