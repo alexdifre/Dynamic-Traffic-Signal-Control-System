@@ -36,6 +36,7 @@ class Environment:
 
         return current_state, performance_score, simulation_ended, visualization_terminated
 
+    
     def _capture_environment_state(self) -> Tuple:
         """
         Captures current intersection status:
@@ -59,19 +60,21 @@ class Environment:
         state = state[0]  # Optimization for a single junction simulation setup
         return tuple(state)
 
+
     def _determine_performance(self, state_observation: Tuple) -> float:
         """
-        - Positive reward when traffic decreases ,good!
-        - Negative reward when traffic increases ,bad!
-        - Zero reward when no change
+        reward: penalizes congestion at each step.
         """
-        traffic_signal_state, n_direction_1_vehicles, n_direction_2_vehicles, non_empty_junction = state_observation
-        
+        _, n_direction_1_vehicles, n_direction_2_vehicles, _= state_observation
+
         current_vehicle_count = n_direction_1_vehicles + n_direction_2_vehicles
-        
-        reward = float(self._last_state_vehicle_count - current_vehicle_count)
-        
-        return reward
+
+        prev_count = max(1, self._last_state_vehicle_count)
+        reward = (prev_count - current_vehicle_count) / prev_count
+
+        return float(reward)
+
+
 
     def restart_environment(self, enable_display: bool = False) -> Tuple:
         """Resets traffic simulation and returns initial conditions."""

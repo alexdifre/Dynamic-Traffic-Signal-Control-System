@@ -102,7 +102,7 @@ def run_evaluation_session(model, simulation_env, total_episodes: int, display: 
         while not terminal_state:
             action_taken = model.select_action(current_observation)
             current_observation, reward, terminal_state, interrupted = simulation_env.perform_step(action_taken)
-            
+
             if interrupted:
                 raise SystemExit("Simulation interrupted")
             

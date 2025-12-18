@@ -23,23 +23,22 @@ class TestEnvironment(unittest.TestCase):
         env._last_state_vehicle_count = 10
         state_improved = (0, 3, 2, False)  # 3 + 2 = 5 vehicles
         reward_improved = env._compute_reward_signal(state_improved)
-        self.assertEqual(reward_improved, 5.0, 
-                        "Reward must be positive when traffic improves")
-        
+        self.assertAlmostEqual(reward_improved, 0.5, places=5,
+                       msg="Reward must be positive and normalized when traffic improves")
+
         # Scenario 2Traffic worsens (vehicles increase from 5 to 12)
         env._last_state_vehicle_count = 5
         state_worsened = (1, 7, 5, True)  # 7 + 5 = 12 vehicles
         reward_worsened = env._compute_reward_signal(state_worsened)
-        self.assertEqual(reward_worsened, -7.0,
-                        "Reward must be negative when traffic worsens")
-        
+        self.assertAlmostEqual(reward_worsened, -1.4, places=5,
+                       msg="Reward must be negative and normalized when traffic worsens")
+
         # Scenario 3No change
         env._last_state_vehicle_count = 8
         state_same = (0, 4, 4, False)  # 4 + 4 = 8 vehicles
         reward_same = env._compute_reward_signal(state_same)
-        self.assertEqual(reward_same, 0.0,
-                        "Reward must be zero when no change")
-    
+        self.assertAlmostEqual(reward_same, 0.0, places=5,
+                       msg="Reward must be zero when no change")
     def test_2_step_executes_simulation_and_updates_cache(self):
         """TEST #2 - step() must run simulation AND update vehicle cache
         

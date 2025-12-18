@@ -19,7 +19,7 @@ class Window:
 
         self._background_color = (235, 235, 235)
         self._screen = pygame.display.set_mode((self._width, self._height))
-        pygame.display.set_caption('AI Traffic Lights Controller')
+        pygame.display.set_caption('Dynamic Traffic Signal Control System')
         pygame.display.flip()
         pygame.font.init()
         font = f'Lucida Console'
